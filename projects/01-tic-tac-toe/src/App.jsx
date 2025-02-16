@@ -5,13 +5,21 @@ import { Square } from "./Components/Square.jsx"
 import { TURNS } from "./constants.js"
 import { checkWinner, checkEndGame } from "./logic/board.js"
 import { WinnerModal } from "./Components/WinnerModal.jsx"
+import { saveGameStorage, resetGameStorage } from "./logic/storage/index.js" 
 
 
 function App() {
-  const [board, setBoard] = useState(
-    Array(9).fill(null)
-  )
-  const [turn, setTurn] = useState(TURNS.X)
+  const [board, setBoard] = useState(() => {
+    const boardFromStorage = window.localStorage.getItem('board')
+    if (boardFromStorage) return JSON.parse(boardFromStorage)
+    return Array(9).fill(null)
+  })
+
+
+  const [turn, setTurn] = useState(() =>{
+    const turnFromStorage = window.localStorage.getItem('turn')
+    return turnFromStorage ?? TURNS.X
+  })
   //null es que no hay ganador, false es empate
   const [winner, setWinner] = useState(null)
 
@@ -19,6 +27,8 @@ function App() {
     setBoard(Array(9).fill(null))
     setTurn(TURNS.X)
     setWinner(null)
+
+    resetGameStorage()
   }
 
   const updateBoard = (index) => {
@@ -31,6 +41,11 @@ function App() {
     //cambia de turno
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X
     setTurn(newTurn)
+    //guardar partida
+    saveGameStorage({
+      board: newBoard,
+      turn: newTurn
+    })
     //revizar si hay un ganador
     const newWinner = checkWinner(newBoard)
     if (newWinner) {
