@@ -1,45 +1,31 @@
 import { useEffect, useState } from "react"
 import './App.css'
+import { getRandonFact } from "./services/facts"
+import { useCatImage } from "./hooks/useCatImage"
 
-const CAT_ENDPOINT_RANDOM_FACT = 'https://catfact.ninja/fact'
-//const CAT_ENDPOINT_IMAGE_URL = `https://cataas.com/cat/says/${firstWord}?size=50&color=red&json=true`
+const CAT_PREFIX_IMAGE_URL = 'https://cataas.com'
 
 export function App() {
     const [ fact,  setFact] = useState()
-    const [ imagenUrl, setImagenUrl] = useState()
-    const [factError, setFactError] = useState()
+    const { imagenUrl } = useCatImage({fact})    
 
     useEffect(() => {
-        fetch(CAT_ENDPOINT_RANDOM_FACT)
-            .then(res => res.json())
-            .then(data => {
-                const { fact } = data
-                setFact(fact)
-            })
-    }, [])
-
-    useEffect(() => {
-        if (!fact) return
-        const threefirstWord = fact.split(' ', 3).join(' ')
-        console.log(threefirstWord)
-        fetch(`https://cataas.com/cat/says/${threefirstWord}?size=50&color=red&json=true`)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data)
-                const { url } = data
-                setImagenUrl(url)
-            })
-    }, [fact])
+        getRandonFact().then(newFact => setFact(newFact))
+    },[])
+    
+    const handleClick = async () => {
+        const newFact = await getRandonFact()
+        setFact(newFact)
+    }
 
     return (
         <main>
             <h1>App de gatitos</h1>
-            <section>
-                {fact && <p>{fact}</p>}
-                {imagenUrl &&<img src={imagenUrl} alt={`Image extracted using the 
-                    first trhee words for ${fact}`} />}
-            </section>
-            
+            <button onClick={handleClick}>Get new fact</button>
+            {fact && <p>{fact}</p>}
+            {imagenUrl &&<img src={imagenUrl} alt={`Image extracted using the 
+                first trhee words for ${fact}`} />}
+                    
         </main>
         
         
