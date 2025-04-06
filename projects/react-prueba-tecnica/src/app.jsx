@@ -1,21 +1,16 @@
-import { useEffect, useState } from "react"
 import './App.css'
-import { getRandonFact } from "./services/facts"
 import { useCatImage } from "./hooks/useCatImage"
+import { useCatFact } from "./hooks/useCatFact"
+import { Otro } from './component/Otro'
 
 const CAT_PREFIX_IMAGE_URL = 'https://cataas.com'
 
-export function App() {
-    const [ fact,  setFact] = useState()
-    const { imagenUrl } = useCatImage({fact})    
-
-    useEffect(() => {
-        getRandonFact().then(newFact => setFact(newFact))
-    },[])
+export function App() {       
+    const { fact, refreshFact } = useCatFact()
+    const { imagenUrl } = useCatImage({fact}) 
     
     const handleClick = async () => {
-        const newFact = await getRandonFact()
-        setFact(newFact)
+        refreshFact()
     }
 
     return (
@@ -25,7 +20,12 @@ export function App() {
             {fact && <p>{fact}</p>}
             {imagenUrl &&<img src={imagenUrl} alt={`Image extracted using the 
                 first trhee words for ${fact}`} />}
-                    
+            
+            <Otro />
+            <Otro />
+            <Otro />
+            <Otro />
+            
         </main>
         
         
