@@ -2,7 +2,6 @@ import './App.css'
 import responseMovies from './mocks/with-results.json'
 import { Movies } from './components/movies.jsx'
 
-
 function App() { 
   const movies = responseMovies.Search
 
@@ -17,7 +16,7 @@ function App() {
       </header> 
 
       <main>
-        <Movies movies={movies}/>       
+        <Movies movies={movies} />
       </main>         
     </div>
   ) 
