@@ -1,22 +1,27 @@
 import './App.css'
-import responseMovies from './mocks/with-results.json'
+import { useMovies } from './hooks/useMovies.js'
 import { Movies } from './components/movies.jsx'
 
 function App() { 
-  const movies = responseMovies.Search
+  const { movies: mappedMovies } = useMovies()
 
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    const { query } = Object.fromEntries(new window.FormData(event.target))
+    console.log({ query })
+  }
   return(
     <div className='page'>
       <header>
         <h1>Buscador de Peliculas</h1>
-        <form className='form'>
-          <input placeholder='Avengers, Star Wars, The Matrix...' />  
+        <form className='form' onSubmit={handleSubmit}>
+          <input name='query' placeholder='Avengers, Star Wars, The Matrix...' />  
           <button type='submit'>Buscar</button>
         </form>  
       </header> 
 
       <main>
-        <Movies movies={movies} />
+        <Movies movies={mappedMovies} />
       </main>         
     </div>
   ) 
