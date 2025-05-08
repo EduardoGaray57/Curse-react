@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { searchMovies } from '../../services/movies'
+import { searchMovies } from '../services/movies'
 
 export function useMovies ({ search }) {
     const [movies, setMovies] = useState([])
