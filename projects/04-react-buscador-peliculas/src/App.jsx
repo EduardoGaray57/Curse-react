@@ -1,9 +1,10 @@
 import './App.css'
-import { useEffect, useState, useRef } from 'react'
 import { useMovies } from './hooks/useMovies.js'
-import { Movies } from './components/movies.jsx'
+import { Movies } from './components/Movies.jsx'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import debounce from 'just-debounce-it'
 
-function useSearch(){
+function useSearch() {
   const [search, updateSearch] = useState('')
   const [error, setError] = useState(null)
   const isFirstInput = useRef(true)
@@ -13,15 +14,15 @@ function useSearch(){
       isFirstInput.current = search === ''
       return
     }
-    if(search === '') {
+    if (search === '') {
       setError('No se puede buscar una pelicula vacia')
       return
     }
-    if(search.match(/^\d+$/)) {
+    if (search.match(/^\d+$/)) {
       setError('No se puede buscar una pelicula con solo numeros')
       return
     }
-    if(search.length < 3) {
+    if (search.length < 3) {
       setError('No se puede buscar una pelicula con menos de 3 caracteres')
       return
     }
@@ -32,37 +33,52 @@ function useSearch(){
   return { search, updateSearch, error }
 }
 
-function App() { 
+function App() {
+  const [sort, setSort] = useState(false)
   const { search, updateSearch, error } = useSearch()
-  const { movies, loading, getMovies } = useMovies({ search })
+  const { movies, loading, getMovies } = useMovies({ search, sort })
+
+  const debouncedGetMovies = useCallback(
+    debounce(search => {
+      getMovies({ search })
+    }, 300)
+    , [getMovies]
+  )
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    getMovies()
+    getMovies({ search })
+  }
+
+  const handleSort = () => {
+    setSort(!sort)
   }
 
   const handleChange = (event) => {
-    updateSearch(event.target.value)
-  } 
+    const newSearch = event.target.value
+    updateSearch(newSearch)
+    debouncedGetMovies(newSearch)
+  }
 
-  return(
+  return (
     <div className='page'>
       <header>
         <h1>Buscador de Peliculas</h1>
         <form className='form' onSubmit={handleSubmit}>
-          <input onChange={handleChange} value={search} name='query' placeholder='Avengers, Star Wars, The Matrix...' />  
+          <input onChange={handleChange} value={search} name='query' placeholder='Avengers, Star Wars, The Matrix...' />
+          <input type="checkbox" onChange={handleSort} checked={sort} />
           <button type='submit'>Buscar</button>
-        </form> 
-        {error && <p style={{ color: 'red'}}>{error}</p>} 
-      </header> 
+        </form>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+      </header>
 
       <main>
         {
           loading ? <p>Cargando...</p> : <Movies movies={movies} />
-        }    
-      </main>         
+        }
+      </main>
     </div>
-  ) 
+  )
 }
 
 export default App
