@@ -7,15 +7,16 @@ export function Filters({ onChange }) {
 
     const handelChangeMinPrice = (event) => {
         setMinPrice(event.target.value)
-        onChange(pervState => ({
-            ...pervState,
+        
+        onChange(prevState => ({
+            ...prevState,
             minPrice: event.target.value
         }))
     }
 
     const handelChangeCategory = (event) => {
-        onChange(pervState => ({
-            ...pervState,
+        onChange(prevState => ({
+            ...prevState,
             category: event.target.value
         }))
     }
