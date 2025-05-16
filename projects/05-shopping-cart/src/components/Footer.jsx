@@ -1,10 +1,12 @@
 import './Footer.css';
+import { useFiltres } from "../hooks/useFilters"
 
-export function Footer({ filter }) {
+export function Footer() {
+    const { filters } = useFiltres()
     return (
         <footer className="footer">
             {
-                JSON.stringify(filter, null, 2)
+                JSON.stringify(filters, null, 2)
             }
             {/*
             <h4>Prueba tecnica</h4>
