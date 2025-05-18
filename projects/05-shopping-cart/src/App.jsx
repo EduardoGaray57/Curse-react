@@ -5,6 +5,7 @@ import { Footer } from "./components/Footer"
 import { IS_DEVELOPMENT } from "./config"
 import { useFiltres } from "./hooks/useFilters"
 import { Cart } from "./components/Cart"
+import { CartProvider } from "./context/cart"
 
 
 function App() {
@@ -13,12 +14,12 @@ function App() {
   const filteredProducts = filterProducts(initialProducts)
 
   return (
-    <>
+    <CartProvider>
       <Header />
       <Cart />
       <Products products={filteredProducts} />
       {IS_DEVELOPMENT && <Footer />}
-    </>
+    </CartProvider>
 
   )
 }

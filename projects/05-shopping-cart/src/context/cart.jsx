@@ -13,15 +13,34 @@ export function CartProvider({ children }) {
             //forma usando el structuredClone
             const newCart = structuredClone(cart)
             newCart[productInCart].quantity += 1
-            setCart(newCart)
+            return setCart(newCart)
         }
+
+        // si el producto no esta en carrito
+        setCart(prevState => ([
+            ...prevState,
+            {
+                ...product,
+                quantity: 1
+            }
+        ]))
     }
+
+    const RemoveFromCart = product => {
+        setCart(prevState => prevState.filter(item => item.id !== product.id))
+    }
+
     const clearCart = () => {
         setCart([])
     }
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, clearCart }}>
+        <CartContext.Provider value={{ 
+            cart, 
+            addToCart,
+            RemoveFromCart, 
+            clearCart 
+            }}>
             {children}
         </CartContext.Provider>
     )
