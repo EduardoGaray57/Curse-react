@@ -1,1 +1,2 @@
-SPAs ---> Single page apllications
+SPAs ---> Single page appllications
+MPAs ---> Multiple page application
