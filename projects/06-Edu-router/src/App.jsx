@@ -1,21 +1,16 @@
-import './App.css'
+import { lazy, Suspense } from 'react'
 
-import HomePage from './pages/Home.jsx'
-import AboutPage from './pages/About.jsx'
+import './App.css'
 import Page404 from './pages/404.jsx'
 import SearchPage from './pages/Search.jsx'
 
 import { Router } from './Router.jsx'
+import { Route } from './Route.jsx'
+
+const HomePage = lazy(() => import('./pages/Home.jsx')) 
+const AboutPage = lazy(() => import('./pages/About.jsx'))   //importacion dinamico
 
 const appRoutes = [
-  {
-    path: '/',
-    Component: HomePage,
-  },
-  {
-    path: '/about',    
-    Component: AboutPage,
-  },
   {
     path: '/search/:query',
     Component: SearchPage
@@ -23,11 +18,14 @@ const appRoutes = [
 ]
 
 function App() {
-  
-
-  return(
+  return (
     <main>
-      <Router routes={appRoutes} defaultComponent = {Page404}/>
+      <Suspense fallback={<h1>Cargando...</h1>}>
+        <Router routes={appRoutes} defaultComponent={Page404}>
+          <Route path="/" Component={HomePage} />
+          <Route path="/about" Component={AboutPage} />
+        </Router>
+      </Suspense>
     </main>
   )
 }
