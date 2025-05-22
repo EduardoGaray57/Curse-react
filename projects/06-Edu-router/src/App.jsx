@@ -12,6 +12,10 @@ const AboutPage = lazy(() => import('./pages/About.jsx'))   //importacion dinami
 
 const appRoutes = [
   {
+    path: '/:lang/about',
+    Component: AboutPage
+  },
+  {
     path: '/search/:query',
     Component: SearchPage
   }
