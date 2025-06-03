@@ -1,15 +1,20 @@
 import { Form } from "react-bootstrap"
-import { SUPPORTED_LANGUAGES } from "../constants"
-import { type FunctionComponent} from 'react'
+import { AUTO_LANGUAGE, SUPPORTED_LANGUAGES } from "../constants"
+import { SectionType, type FromLanguage, type Language } from "../types.d"
 
+type Props =
+    | { type: SectionType.From, value: FromLanguage, onChange: (language: FromLanguage) => void}
+    | { type: SectionType.To, value: Language, onChange: (language: Language) => void}
 
-interface Props {
-    onChange: (language: string) => void
-}
+export const LanguageSelector = ({ onChange, type, value }: Props) => {
+    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        onChange(event.target.value as Language)
+    }
 
-export const LanguageSelector: FunctionComponent<Props> = ({ onChange }) => {
     return (
-        <Form.Select aria-label="Selecciona el idioma">
+        <Form.Select aria-label="Selecciona el idioma" onChange={handleChange} value={value}>
+            {type === SectionType.From && <option value={AUTO_LANGUAGE}>Detectar idioma</option>}
+
             {Object.entries(SUPPORTED_LANGUAGES).map(([key, lateral]) => (
                 <option key={key} value={key}>
                     {lateral}
